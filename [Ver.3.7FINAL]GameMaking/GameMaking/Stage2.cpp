@@ -115,6 +115,7 @@ void CStage2::Progress(float _Time)
 			m_ListObj[OBJ_MONSTER]->push_back(CAbstractFactory<CMonster>::CreateObj(300, 50, 2));
 			((CMonster*)m_ListObj[OBJ_MONSTER]->back())->SetMonBullet(m_ListObj[OBJ_MONBULLET]);
 			m_ListObj[OBJ_MONSTER]->push_back(CAbstractFactory<CMonster>::CreateObj((rand() % 550) + 200, 10, 3));
+			((CMonster*)m_ListObj[OBJ_MONSTER]->back())->SetMonBullet(m_ListObj[OBJ_MONBULLET]);
 			m_ListObj[OBJ_MONSTER]->push_back(CAbstractFactory<CMonster>::CreateObj(350, -10, 6));
 			((CMonster*)m_ListObj[OBJ_MONSTER]->back())->SetMonBullet(m_ListObj[OBJ_MONBULLET]);
 			++iWave;

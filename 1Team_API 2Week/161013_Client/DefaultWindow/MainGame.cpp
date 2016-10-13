@@ -49,8 +49,8 @@ void CMainGame::LoadData(void)
 
 void CMainGame::Initialize(void)
 {
-
 	m_hdc = GetDC(g_hWnd); // HDC 가져오기.
+	m_CTimer.SetTimer();
 
 	/////////Obj_List /////////////
 	m_ObjList[OBJ_PLAYER].push_back(CObjFactory<CPlayer>::CreateObj(100,100,PLAYER_HUMAN));	// ObjLIst에서 플레이더 같이 관리함. 플레이어 생성(100,100위치에 PLAYER_HUMAN타입으로 생성)

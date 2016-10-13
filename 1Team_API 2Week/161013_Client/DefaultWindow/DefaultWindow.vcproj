@@ -395,6 +395,18 @@
 				</File>
 			</Filter>
 		</Filter>
+		<Filter
+			Name="03. Timer"
+			>
+			<File
+				RelativePath=".\Timer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Timer.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

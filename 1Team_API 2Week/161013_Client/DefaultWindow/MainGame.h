@@ -1,6 +1,7 @@
 #pragma once
 #include "Obj.h"
 #include "define.h"
+#include "Timer.h"
 
 class CStage_1;
 class CStage_2;
@@ -11,7 +12,7 @@ protected:
 	HDC			m_hdc;
 	list<CObj*>		m_ObjList[OBJ_END]; //0.플레이어 1. 불렛 2. 아이템 3. 몬스터 4. 보스 5. 박스
 	list<LINE*>		m_LineList;
-
+	CTimer			m_CTimer;	
 private:
 	int			m_iStage;
 	CStage_1*	m_CStage1;

@@ -12,6 +12,7 @@ CStage_2::~CStage_2(void)
 void CStage_2::Initialize(void)
 {
 	m_hdc = GetDC(g_hWnd);
+	m_CTimer.SetTimer();
 }
 void CStage_2::Progress(float _fTime)
 {

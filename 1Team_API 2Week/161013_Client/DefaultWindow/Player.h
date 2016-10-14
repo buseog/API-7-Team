@@ -22,6 +22,7 @@ private:
 	void	LineCollision(void);
 
 public:
+	void	SetJumpOff(void);
 	void	SetLine(list<LINE*>* pLine);
 	void	SetBulletList(list<CObj*>* pBulletList);
 

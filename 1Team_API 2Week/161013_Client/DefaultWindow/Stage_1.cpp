@@ -1,5 +1,9 @@
 #include "StdAfx.h"
 #include "Stage_1.h"
+#include "ObjFactory.h"
+#include "Box.h"
+#include "CollisionMgr.h"
+
 
 CStage_1::CStage_1(void)
 {
@@ -13,6 +17,7 @@ void CStage_1::Initialize(void)
 {
 	m_hdc = GetDC(g_hWnd);
 	m_CTimer.SetTimer();
+	m_ObjList[OBJ_BOX]->push_back(CObjFactory<CBox>::CreateObj(200.f, 200.f, BOX_NORMAL));
 }
 void CStage_1::Progress(float _fTime)
 {
@@ -23,6 +28,8 @@ void CStage_1::Progress(float _fTime)
 			(*Iter)->Progress();
 		}
 	}
+
+	CCollisionMgr::CollisionBox(m_ObjList[OBJ_PLAYER], m_ObjList[OBJ_BOX]);
 }
 void CStage_1::Render(void)
 {

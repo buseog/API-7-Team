@@ -4,6 +4,7 @@
 
 
 CMyEdit::CMyEdit(void)
+	:m_iType(0)
 {
 }
 
@@ -26,21 +27,47 @@ void CMyEdit::Progress(void)
 	tMousePos.fX = (float)::GetMouse().x - m_fScrollX;
 	tMousePos.fY = (float)::GetMouse().y;
 
-	if(GetAsyncKeyState('S'))
+	if(GetAsyncKeyState('1'))
 	{
-		m_tStartPoint = tMousePos;
-		m_bStart = true;
+		if (m_Stage1[0].size() == 0)
+		{
+			m_bStart = true;
+			m_tStartPoint = tMousePos;
+		}
+		m_iType = 1;	
 	}
 
-	if(GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+	if (GetAsyncKeyState('2'))
 	{
-		if(m_bStart)
+		m_iType = 2;
+		m_tBoxStartPoint = tMousePos;
+		m_bStart = true;
+	}
+	if (GetAsyncKeyState('A'))
+	{
+		Safe_Delete(m_Stage1[m_iType - 1].back());
+		m_Stage1[m_iType - 1].pop_back();
+	}
+
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+	{
+		if (m_iType == 1)
 		{
-			m_LineList.push_back(new LINE(m_tStartPoint, tMousePos));
+			if (m_bStart == true)
+			{
+				m_Stage1[0].push_back(new LINE(m_tStartPoint, tMousePos));
+				m_bStart = false;
+			}
+			else
+			{
+				m_Stage1[0].push_back(new LINE(m_Stage1[0].back()->tRPoint, tMousePos));
+			}
+		}
+		else if (m_iType == 2)
+		{
+			m_Stage1[1].push_back(new LINE(m_tBoxStartPoint, tMousePos));
 			m_bStart = false;
 		}
-
-	m_LineList.push_back(new LINE(m_LineList.back()->tRPoint, tMousePos));
 	}
 
 	if(GetAsyncKeyState(VK_RETURN))
@@ -60,23 +87,38 @@ void CMyEdit::Progress(void)
 
 void CMyEdit::Render(HDC hdc)
 {
-	MoveToEx(hdc, int(m_tStartPoint.fX + m_fScrollX), (int)m_tStartPoint.fY, NULL);
-
-	for(list<LINE*>::iterator	iter = m_LineList.begin();
-		iter != m_LineList.end(); ++iter)
+	if (m_Stage1[0].size() != 0)
 	{
-		LineTo(hdc, int((*iter)->tRPoint.fX + m_fScrollX), (int)(*iter)->tRPoint.fY);
+		MoveToEx(hdc, int(m_tStartPoint.fX + m_fScrollX), (int)m_tStartPoint.fY, NULL);
+
+		for (list<LINE*>::iterator	iter = m_Stage1[0].begin();
+			iter != m_Stage1[0].end(); ++iter)
+		{
+			LineTo(hdc, int((*iter)->tRPoint.fX + m_fScrollX), (int)(*iter)->tRPoint.fY);
+		}
+	}
+
+	if (m_Stage1[1].size() != 0)
+	{
+		for (list<LINE*>::iterator	iter = m_Stage1[1].begin();
+			iter != m_Stage1[1].end(); ++iter)
+		{
+			Rectangle(hdc, (*iter)->tLPoint.fX + m_fScrollX, (*iter)->tLPoint.fY, (*iter)->tRPoint.fX + m_fScrollX, (*iter)->tRPoint.fY);
+		}
 	}
 }
 
 void CMyEdit::Release(void)
 {
-	for(list<LINE*>::iterator	iter = m_LineList.begin();
-		iter != m_LineList.end(); ++iter)
+	for (int i = 0; i < 2; ++i)
 	{
-		::Safe_Delete(*iter);
+		for (list<LINE*>::iterator	iter = m_Stage1[i].begin();
+			iter != m_Stage1[i].end(); ++iter)
+		{
+			::Safe_Delete(*iter);
+		}
+		m_Stage1[i].clear();
 	}
-	m_LineList.clear();
 }
 
 void CMyEdit::SaveData(void)
@@ -92,12 +134,14 @@ void CMyEdit::SaveData(void)
 						FILE_ATTRIBUTE_NORMAL,	// 파일의 특정 정보를 삽입(일반 파일 지정상태)			
 						NULL);					// 기존에 존재하는 파일과 동등한 특성을 가진 새파일을 생성(필요 없음)
 
-	for(list<LINE*>::iterator	iter = m_LineList.begin();
-		iter != m_LineList.end(); ++iter)
+	for (int i = 0; i < 2; ++i)
 	{
-		WriteFile(hFile, (*iter), sizeof(LINE), &dwByte, NULL);
+		for (list<LINE*>::iterator	iter = m_Stage1[i].begin();
+			iter != m_Stage1[i].end(); ++iter)
+		{
+			WriteFile(hFile, (*iter), sizeof(LINE), &dwByte, NULL);
+		}
 	}
-
 	CloseHandle(hFile);
 
 }

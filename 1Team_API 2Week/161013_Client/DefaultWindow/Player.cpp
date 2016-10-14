@@ -41,7 +41,6 @@ void CPlayer::Initialize(void)
 void CPlayer::Progress(void)
 {
 	KeyInput();	
-	LineCollision();
 	Scroll();
 
 	if(m_bJump)
@@ -51,6 +50,7 @@ void CPlayer::Progress(void)
 		m_tInfo.fY += -10.f + (6.f * m_fTime * m_fTime) / 2.f;
 	}
 
+	LineCollision();
 }
 
 void CPlayer::Render(HDC hdc)
@@ -77,13 +77,13 @@ void CPlayer::Release(void)
 
 void CPlayer::Scroll(void)
 {
-	if(m_tInfo.fX > m_fOffSetX + 200)
+	if(m_tInfo.fX > m_fOffSetX + 100)
 	{
 		m_fScrollX -= m_tStat.fSpeed;
 		m_fOffSetX += m_tStat.fSpeed;
 	}
 
-	if(m_tInfo.fX < m_fOffSetX - 200)
+	if (m_tInfo.fX < m_fOffSetX - 100 && m_tInfo.fX > 300)
 	{
 		m_fScrollX += m_tStat.fSpeed;
 		m_fOffSetX -= m_tStat.fSpeed;
@@ -112,7 +112,7 @@ void CPlayer::KeyInput(void)
 	{
 		if(m_bJump)
 			return;
-
+		m_fTime = 0.f;
 		m_bJump = true;
 	}
 
@@ -146,21 +146,21 @@ void CPlayer::LineCollision(void)
 
 	float fY = fGradient * (m_tInfo.fX - pLine->tLPoint.fX) + pLine->tLPoint.fY;
 
-	if(!m_bJump)
-		m_tInfo.fY = fY;
-
-	else
+	if (m_tInfo.fY > fY)
 	{
-		if(m_tInfo.fY > fY)
-		{
-			m_fTime = 0.f;
-			m_bJump = false;
-			m_tInfo.fY = fY;
-		}
+		m_fTime = 0.f;
+		m_bJump = false;
+		m_tInfo.fY = fY;
 	}
+	else if (m_tInfo.fY < fY && m_bJump == false)
+		m_tInfo.fY += m_tStat.fSpeed;
+
 
 }
-
+void CPlayer::SetJumpOff(void)
+{
+	m_bJump = false;
+}
 void CPlayer::SetLine(list<LINE*>* pLine)
 {
 	m_pLine = pLine;

@@ -7,6 +7,8 @@
 
 CMainGame::CMainGame(void)
 :m_iStage(1)
+,m_CStage1(NULL)
+,m_CStage2(NULL)
 {
 
 }
@@ -64,12 +66,13 @@ void CMainGame::Initialize(void)
 
 	///////////스테이지 //////////////////
 	m_CStage1 = new CStage_1;		// 1스테이지를 활성화시킴.
-	m_CStage1->Initialize();		// 1스테이지가 가진 이니셜라이즈
+	
 	((CStage_1*)m_CStage1)->SetLineList(&m_LineList);
 	for (int i = 0; i < OBJ_END; ++i)	//포문 돌면서 ObjList 0~ END까지 전부 다 돌린다.(플레이어~박스까지)
 	{
 		((CStage_1*)m_CStage1)->SetObjList(i, &m_ObjList[i]); // 메인게임이 가진 ObjList를 스테이지 1이 가진 ObjList랑 동기화시킨다.
 	}
+	m_CStage1->Initialize();		// 1스테이지가 가진 이니셜라이즈
 
 	m_CStage2 = new CStage_2;		// 1스테이지를 활성화시킴.
 	m_CStage2->Initialize();		// 1스테이지가 가진 이니셜라이즈
@@ -133,6 +136,9 @@ void CMainGame::Release(void)
 		::Safe_Delete(*iter);
 	}
 	m_LineList.clear();
+
+	Safe_Delete(m_CStage1);
+	Safe_Delete(m_CStage2);
 }
 
 

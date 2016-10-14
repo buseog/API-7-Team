@@ -7,8 +7,9 @@ class CMyEdit :
 private:
 	bool		m_bStart;
 	LINEPOINT	m_tStartPoint;
-	list<LINE*>	m_LineList;
-
+	LINEPOINT	m_tBoxStartPoint;
+	list<LINE*>	m_Stage1[2];
+	int			m_iType;
 	float		m_fScrollX;
 
 public:
